@@ -43,7 +43,7 @@ In the first phase of the experiment, the manipulator repositioned two blocks on
 
 | Initial Scene | Pre-Push | Mid-Push | Push Completed |
 | :---: | :---: | :---: | :---: |
-| ![Init](output/phase1_init.png) | ![Pre-Push](output/phase2_pre_push.png) | ![Mid-Push](output/phase2_mid_push.png) | ![Push Done](output/phase3_push_done.png) |
+| ![Init](assets/phase1_init.png) | ![Pre-Push](assets/phase2_pre_push.png) | ![Mid-Push](assets/phase2_mid_push.png) | ![Push Done](assets/phase3_push_done.png) |
 
 ---
 
@@ -56,7 +56,7 @@ In the second phase, the arm picks up the red block and carries it over a centra
 
 | Pre-Grasp | Grasping | Lifting / Transiting | Placement | Post-Retraction |
 | :---: | :---: | :---: | :---: | :---: |
-| ![Pre-Grasp](output/phase4_pre_grasp.png) | ![Grasp](output/phase5_grasp.png) | ![Lifting](output/phase6_lift.png) | ![Placement](output/phase8_place.png) | ![Done](output/phase9_done.png) |
+| ![Pre-Grasp](assets/phase4_pre_grasp.png) | ![Grasp](assets/phase5_grasp.png) | ![Lifting](assets/phase6_lift.png) | ![Placement](assets/phase8_place.png) | ![Done](assets/phase9_done.png) |
 
 ---
 
@@ -68,23 +68,23 @@ Data was collected throughout both tasks at a frequency matching the simulation 
 The trajectory plot illustrates the displacement of both blocks over time. The transition between the pushing phase (first 2 seconds) and the pick-and-place phase (after the coordinate reset at 2.2 seconds) is clearly visible.
 
 <p align="center">
-  <img src="output/plot_box_trajectories.png" alt="Trajectories" width="70%" />
+  <img src="assets/plot_box_trajectories.png" alt="Trajectories" width="70%" />
 </p>
 
 ### Joint States & Actuator Torques
 The joint angle trajectories show smooth, continuous changes, indicating that the minimum-jerk trajectory interpolation and the DLS IK solver successfully avoided joint-space discontinuities and singularities. The corresponding torque plots show transient spikes during high-acceleration phases and steady-state holding torques necessary to support the arm and payloads against gravity.
 
 <p align="center">
-  <img src="output/plot_joint_positions.png" alt="Joint Positions" width="48%" />
-  <img src="output/plot_joint_torques.png" alt="Actuator Torques" width="48%" />
+  <img src="assets/plot_joint_positions.png" alt="Joint Positions" width="48%" />
+  <img src="assets/plot_joint_torques.png" alt="Actuator Torques" width="48%" />
 </p>
 
 ### IMU Accelerometer Data & Contact Forces
 The IMU accelerometer on the red block records transient accelerations during the pushing phase and sustained gravitational acceleration ($~9.81\text{ m/s}^2$) when held aloft by the gripper. The contact force plot shows high-frequency force spikes corresponding to the collision during the push and the initial grasping impact, which drop to nominal levels during free-space transit.
 
 <p align="center">
-  <img src="output/plot_imu_accelerations.png" alt="IMU Data" width="48%" />
-  <img src="output/plot_contact_forces.png" alt="Contact Forces" width="48%" />
+  <img src="assets/plot_imu_accelerations.png" alt="IMU Data" width="48%" />
+  <img src="assets/plot_contact_forces.png" alt="Contact Forces" width="48%" />
 </p>
 
 ---
