@@ -113,6 +113,13 @@ To set up the environment and run the simulation locally, follow the steps below
 * **OS**: Windows, macOS, or Linux.
 
 ### Installation
+
+You can set up the virtual environment automatically using the provided scripts:
+* **Windows**: Run `setup_venv.bat` in the command prompt or file explorer.
+* **macOS/Linux**: Run `source setup_venv.sh` (or make it executable with `chmod +x setup_venv.sh` and run `./setup_venv.sh`).
+
+Alternatively, to set up the environment manually:
+
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/AadityaBorse26/Corvinius.git
@@ -135,6 +142,7 @@ To set up the environment and run the simulation locally, follow the steps below
    ```bash
    pip install -r requirements.txt
    ```
+
 
 ### Running the Code
 * **Run the main simulation**:
