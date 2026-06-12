@@ -100,4 +100,65 @@ Implementing this system on real hardware (e.g., to train a Vision-Language-Acti
 ### Mitigation Strategies
 1. **Dynamics Randomization:** Perturbing parameters like mass, friction coefficients, joint damping, and gravity during simulation-based policy training.
 2. **Visual Domain Randomization:** Adding random noise, varying lighting angles/temperatures, and placing random objects in the scene during synthetic data generation.
-3. **Domain Adaptation Networks:** Utilizing adversarial training or pre-trained features (e.g., DinoV2) to map real-world visual observations into a shared latent space that aligns with the simulation representations.
+3. Domain Adaptation Networks: Utilizing adversarial training or pre-trained features (e.g., DinoV2) to map real-world visual observations into a shared latent space that aligns with the simulation representations.
+
+---
+
+## 6. Setup and Execution
+
+To set up the environment and run the simulation locally, follow the steps below:
+
+### Prerequisites
+* **Python**: Version 3.9 to 3.11 is recommended.
+* **OS**: Windows, macOS, or Linux.
+
+### Installation
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/AadityaBorse26/Corvinius.git
+   cd Corvinius
+   ```
+
+2. **Create and activate a virtual environment**:
+   * **Windows**:
+     ```powershell
+     python -m venv .venv
+     .venv\Scripts\activate
+     ```
+   * **macOS/Linux**:
+     ```bash
+     python3 -m venv .venv
+     source .venv/bin/activate
+     ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Running the Code
+* **Run the main simulation**:
+  This executes both the cooperative pushing and the pick-and-place tasks, collects telemetry data, captures phase screenshots, and outputs performance plots in the `output/` directory:
+  ```bash
+  python simulation.py
+  ```
+
+* **Run the contact dynamics checks**:
+  This reports active contact geometries, forces, and spatial coordinates to verify the simulation's contact solver:
+  ```bash
+  python check_contacts.py
+  ```
+
+* **Run the diagnostics check**:
+  This outputs real-time step-by-step joint, end-effector, and finger state diagnostics during a mock workspace pick-and-place operation:
+  ```bash
+  python check_eef_box.py
+  ```
+
+### Generated Outputs
+After running `simulation.py`, the `output/` directory will be created containing:
+1. **Screenshots** (`phase1_init.png` to `phase9_done.png`) visualizing the execution phases.
+2. **Telemetry Plots**:
+   * `plot_box_trajectories.png`: Cartesian displacement of the red and blue boxes.
+   * `plot_joint_positions.png` & `plot_joint_torques.png`: Manipulator joint configuration and motor torque profile.
+   * `plot_imu_accelerations.png` & `plot_contact_forces.png`: Inertial measurement readings and contact interaction forces.
