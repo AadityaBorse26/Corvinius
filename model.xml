@@ -1,0 +1,156 @@
+<mujoco model="rs_round2_challenge">
+  <compiler angle="radian" coordinate="local"/>
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+
+  <asset>
+    <!-- Floor checkerboard pattern for spatial reference and tracking -->
+    <texture name="grid" type="2d" builtin="checker" rgb1=".25 .3 .35" rgb2=".15 .18 .2" width="512" height="512" mark="edge" markrgb=".3 .4 .5"/>
+    <material name="floor_mat" texture="grid" texrepeat="2 2" texuniform="true"/>
+    <material name="table_mat" rgba="0.2 0.2 0.22 1" roughness="0.5"/>
+    <material name="robot_mat" rgba="0.65 0.65 0.7 1" roughness="0.3"/>
+    <material name="finger_mat" rgba="0.3 0.3 0.3 1" roughness="0.6"/>
+    <material name="block1_mat" rgba="0.85 0.15 0.15 1" roughness="0.2"/>
+    <material name="block2_mat" rgba="0.15 0.15 0.85 1" roughness="0.2"/>
+    <material name="barrier_mat" rgba="0.8 0.6 0.1 1" roughness="0.4"/>
+  </asset>
+
+  <worldbody>
+    <light directional="true" diffuse=".8 .8 .8" specular="0.1 0.1 0.1" pos="0 0 5" dir="0 0 -1"/>
+    <geom name="floor" type="plane" size="0 0 .25" material="floor_mat" contype="1" conaffinity="4"/>
+
+    <!-- Table -->
+    <body name="table" pos="0 0.6 0.4">
+      <geom name="table_top" type="box" size="0.6 0.4 0.4" material="table_mat" contype="1" conaffinity="4"/>
+    </body>
+
+    <!-- 6-DOF Manipulator kinematic chain -->
+    <body name="robot_base" pos="0 0.15 0.8">
+      <geom name="base" type="cylinder" size="0.05 0.05" material="robot_mat" contype="2" conaffinity="4"/>
+      <!-- Joint 1: Shoulder Pan -->
+      <body name="link1" pos="0 0 0.05">
+        <joint name="joint1" type="hinge" axis="0 0 1" range="-3.14 3.14" limited="true" damping="2.0"/>
+        <geom name="geom_link1" type="cylinder" size="0.04 0.05" material="robot_mat" contype="2" conaffinity="4"/>
+        <!-- Joint 2: Shoulder Lift -->
+        <body name="link2" pos="0 0 0.05">
+          <joint name="joint2" type="hinge" axis="0 1 0" range="-2.0 2.0" limited="true" damping="4.0"/>
+          <geom name="geom_link2" type="capsule" fromto="0 0 0 0 0 0.3" size="0.035" material="robot_mat" contype="2" conaffinity="4"/>
+          <!-- Joint 3: Elbow -->
+          <body name="link3" pos="0 0 0.3">
+            <joint name="joint3" type="hinge" axis="0 1 0" range="-2.5 2.5" limited="true" damping="4.0"/>
+            <geom name="geom_link3" type="capsule" fromto="0 0 0 0 0 0.25" size="0.03" material="robot_mat" contype="2" conaffinity="4"/>
+            <!-- Joint 4: Wrist 1 -->
+            <body name="link4" pos="0 0 0.25">
+              <joint name="joint4" type="hinge" axis="0 1 0" range="-3.14 3.14" limited="true" damping="2.0"/>
+              <geom name="geom_link4" type="cylinder" size="0.025 0.03" material="robot_mat" contype="2" conaffinity="4"/>
+              <!-- Joint 5: Wrist 2 -->
+              <body name="link5" pos="0 0 0.03">
+                <joint name="joint5" type="hinge" axis="1 0 0" range="-3.14 3.14" limited="true" damping="1.0"/>
+                <geom name="geom_link5" type="cylinder" size="0.025 0.03" material="robot_mat" quat="0.707 0 0.707 0" contype="2" conaffinity="4"/>
+                <!-- Joint 6: Wrist 3 -->
+                <body name="link6" pos="0 0 0.03">
+                  <joint name="joint6" type="hinge" axis="0 0 1" range="-3.14 3.14" limited="true" damping="1.0"/>
+                  <geom name="geom_link6" type="cylinder" size="0.02 0.02" material="robot_mat" contype="2" conaffinity="4"/>
+                  <!-- Gripper -->
+                  <body name="gripper_base" pos="0 0 0.02">
+                    <geom name="gripper_block" type="box" size="0.04 0.01 0.005" material="robot_mat" contype="2" conaffinity="4"/>
+                    <!-- Left finger -->
+                    <body name="left_finger" pos="-0.035 0 0.04">
+                      <joint name="left_finger_joint" type="slide" axis="1 0 0" range="0 0.025" limited="true" damping="2.0"/>
+                      <geom name="left_finger_geom" type="box" size="0.005 0.01 0.04" material="finger_mat" condim="4" friction="2.0 0.05 0.0001" solref="0.002 1" contype="2" conaffinity="4"/>
+                    </body>
+                    <!-- Right finger -->
+                    <body name="right_finger" pos="0.035 0 0.04">
+                      <joint name="right_finger_joint" type="slide" axis="-1 0 0" range="0 0.025" limited="true" damping="2.0"/>
+                      <geom name="right_finger_geom" type="box" size="0.005 0.01 0.04" material="finger_mat" condim="4" friction="2.0 0.05 0.0001" solref="0.002 1" contype="2" conaffinity="4"/>
+                    </body>
+                    <site name="eef" pos="0 0 0.04" size="0.005" rgba="0 1 0 1"/>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+
+    <!-- Central partition barrier. Height matches 1/3 of maximum manipulator vertical reach. -->
+    <body name="barrier" pos="0 0.65 0.935">
+      <geom name="barrier_geom" type="box" size="0.01 0.35 0.135" material="barrier_mat" contype="1" conaffinity="4"/>
+    </body>
+
+    <!-- Box 1 (Red) -->
+    <body name="box1" pos="-0.2 0.6 0.825">
+      <joint name="box1_joint" type="free"/>
+      <geom name="box1_geom" type="box" size="0.025 0.025 0.025" mass="0.1" material="block1_mat" condim="4" friction="1.5 0.05 0.0001" solref="0.002 1" contype="4" conaffinity="7"/>
+      <site name="box1_imu" pos="0 0 0" size="0.005"/>
+    </body>
+
+    <!-- Box 2 (Blue) -->
+    <body name="box2" pos="-0.3 0.6 0.825">
+      <joint name="box2_joint" type="free"/>
+      <geom name="box2_geom" type="box" size="0.025 0.025 0.025" mass="0.1" material="block2_mat" condim="4" friction="1.5 0.05 0.0001" contype="4" conaffinity="7"/>
+      <site name="box2_imu" pos="0 0 0" size="0.005"/>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="act_j1" joint="joint1" kp="300" ctrlrange="-3.14 3.14"/>
+    <position name="act_j2" joint="joint2" kp="1200" ctrlrange="-2.0 2.0"/>
+    <position name="act_j3" joint="joint3" kp="1200" ctrlrange="-2.5 2.5"/>
+    <position name="act_j4" joint="joint4" kp="400" ctrlrange="-3.14 3.14"/>
+    <position name="act_j5" joint="joint5" kp="200" ctrlrange="-3.14 3.14"/>
+    <position name="act_j6" joint="joint6" kp="200" ctrlrange="-3.14 3.14"/>
+    <position name="act_gripper_l" joint="left_finger_joint" kp="1500" ctrlrange="0 0.025"/>
+    <position name="act_gripper_r" joint="right_finger_joint" kp="1500" ctrlrange="0 0.025"/>
+  </actuator>
+
+  <sensor>
+    <accelerometer name="box1_accel" site="box1_imu"/>
+    <gyro name="box1_gyro" site="box1_imu"/>
+    <accelerometer name="box2_accel" site="box2_imu"/>
+    <gyro name="box2_gyro" site="box2_imu"/>
+  </sensor>
+
+  <contact>
+    <!-- Collision exclusion: self-collisions along kinematic chain -->
+    <exclude body1="robot_base" body2="link1"/>
+    <exclude body1="robot_base" body2="link2"/>
+    <exclude body1="link1" body2="link2"/>
+    <exclude body1="link1" body2="link3"/>
+    <exclude body1="link2" body2="link3"/>
+    <exclude body1="link2" body2="link4"/>
+    <exclude body1="link3" body2="link4"/>
+    <exclude body1="link3" body2="link5"/>
+    <exclude body1="link4" body2="link5"/>
+    <exclude body1="link4" body2="link6"/>
+    <exclude body1="link5" body2="link6"/>
+    <exclude body1="link5" body2="gripper_base"/>
+    <exclude body1="link6" body2="gripper_base"/>
+    <exclude body1="gripper_base" body2="left_finger"/>
+    <exclude body1="gripper_base" body2="right_finger"/>
+    
+    <!-- Collision exclusion: manipulator base and links with workbench surface -->
+    <exclude body1="robot_base" body2="table"/>
+    <exclude body1="link1" body2="table"/>
+    <exclude body1="link2" body2="table"/>
+    <exclude body1="link3" body2="table"/>
+    <exclude body1="link4" body2="table"/>
+    <exclude body1="link5" body2="table"/>
+    <exclude body1="link6" body2="table"/>
+    <exclude body1="gripper_base" body2="table"/>
+    <exclude body1="left_finger" body2="table"/>
+    <exclude body1="right_finger" body2="table"/>
+
+    <!-- Collision exclusion: manipulator links with central barrier -->
+    <exclude body1="robot_base" body2="barrier"/>
+    <exclude body1="link1" body2="barrier"/>
+    <exclude body1="link2" body2="barrier"/>
+    <exclude body1="link3" body2="barrier"/>
+    <exclude body1="link4" body2="barrier"/>
+    <exclude body1="link5" body2="barrier"/>
+    <exclude body1="link6" body2="barrier"/>
+    <exclude body1="gripper_base" body2="barrier"/>
+    <exclude body1="left_finger" body2="barrier"/>
+    <exclude body1="right_finger" body2="barrier"/>
+  </contact>
+</mujoco>
